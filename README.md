@@ -13,14 +13,15 @@ pip install snitch2
 import snitch2
 
 
-results = snitch.search(ORIGIN_DOMAIN, QUERY)
+results = snitch.search(origin_domain, target_url)
 ```
 
-Example response
+Example results
 ```
 {
     origin_domain: 'origin.com',
-    query_domain: 'query.com',
+    target_url: 'query.com',
+    max_depth: 5,
     pages_crawled: 2,
     pages_containing: 2,
     results_total: 5
