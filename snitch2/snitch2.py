@@ -40,9 +40,40 @@ def crawl(graph, origin_domain, start_url):
     return graph
 
 
+def crawl_page(start_url, target_uri):
+    """Crawl single page looking for target_uri"""
+    # Fetch html page
+    html_page = requests.get(start_url).text
+
+    soup = BeautifulSoup(html_page, 'html.parser')
+    results = []
+
+    for link in soup.find_all('a'):
+        href = link.get('href')
+        if contains(href, target_uri):
+            results.append({
+                "href": href,
+                "page_uri": start_url
+            })
+
+    result = {
+        "start_url": start_url,
+        "target_uri": target_uri,
+        "results_total": len(results),
+        "results": results
+    }
+
+    return result
+
+
 def contains(str1, str2):
     """Return true if str1 contains str2"""
-    result = str1.find(str2)
+    try:
+        result = str1.find(str2)
+    except TypeError as e:
+        return False # Handle if str2 is None
+    except AttributeError as e:
+        return False # Handle if str1 is None
 
     if result == -1:
         return False
@@ -52,4 +83,4 @@ def contains(str1, str2):
 
 
 if __name__ == '__main__':
-    crawl({}, 'github.com', 'http://joelcolucci.com')
+    print crawl_page('http://www.joelcolucci.com', 'github.com')
