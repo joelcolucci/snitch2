@@ -28,6 +28,17 @@ class Snitch2TestCase(TestCase):
 
         self.assertFalse(snitch2.contains(str1, str2))
 
+    def test_contains_handles_none(self):
+        str1 = None
+        str2 = 'google.com'
+
+        self.assertFalse(snitch2.contains(str1, str2))
+
+        str1 = 'google.com'
+        str2 = None
+
+        self.assertFalse(snitch2.contains(str1, str2))
+
 
 if __name__ == '__main__':
     main()
