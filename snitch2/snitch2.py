@@ -35,8 +35,9 @@ def crawl(start_url, target_uri, max_crawl=1):
             uris = extract_uris_from_html(html_page)
 
             for uri in uris:
-                # Only crawl pages on same domain
-                queue.append(uri)
+                # Only crawl pages on starting domain
+                if contains(uri, start_url):
+                    queue.append(uri)
 
                 if contains(uri, target_uri):
                     results.append({
@@ -44,6 +45,7 @@ def crawl(start_url, target_uri, max_crawl=1):
                         "target_uri": target_uri,
                         "page_uri": vertex
                     })
+
             pages_crawled += 1
 
     response = {
@@ -53,6 +55,7 @@ def crawl(start_url, target_uri, max_crawl=1):
         "guilty_total": len(results),
         "guilty_results": results  
     }
+
     return json.dumps(response)
 
 
@@ -107,9 +110,37 @@ def extract_uris_from_html(html_page):
     return results
 
 
-def fetch_html(url):
-    return requests.get(url).text
+def fetch_html(uri):
+    """Return HTML page as string"""
+    if not has_protocol(uri):
+        if has_leading_forward_slashes(uri):
+            uri = '{}{}'.format('http:', uri)
+        else:    
+            uri = '{}{}'.format('http://', uri)
+
+    return requests.get(uri).text
+
+
+def has_leading_forward_slashes(uri):
+    """Return true if uri contains leading forward slashes"""
+    start = uri[:2]
+
+    if start == '//':
+        return True
+    
+    return False
+
+
+def has_protocol(uri):
+    """Return True is uri has HTTP/HTTPS protocol"""
+    regex = '(https?\:\/\/)'
+
+    result = re.match(regex, uri)
+    if result:
+        return True
+
+    return False
 
 
 if __name__ == '__main__':
-    print crawl('http://www.joelcolucci.com', 'github.com')
+    print crawl('//github.com/joelcolucci', 'http://www.joelcolucci.com', 3)
