@@ -3,6 +3,7 @@
 
 
 from collections import deque
+import re
 
 from bs4 import BeautifulSoup
 import requests
@@ -31,13 +32,24 @@ def crawl(graph, origin_domain, start_url):
             # Add origin domain link to queue
             soup = BeautifulSoup(html_page, 'html.parser')
             for link in soup.find_all('a'):
-                print link.get('href')
-                if link == origin_domain:
+                href = link.get('href')
+                if contains(href, origin_domain):
                     #queue.append(link.get('href'))
-                    pass
+                    print("heyo")
 
     return graph
 
 
+def contains(str1, str2):
+    """Return true if str1 contains str2"""
+    result = str1.find(str2)
+
+    if result == -1:
+        return False
+
+    return True
+
+
+
 if __name__ == '__main__':
-    crawl({}, 'http://joelcolucci.com', 'http://joelcolucci.com')
+    crawl({}, 'github.com', 'http://joelcolucci.com')
