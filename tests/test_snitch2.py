@@ -39,6 +39,32 @@ class Snitch2TestCase(TestCase):
 
         self.assertFalse(snitch2.contains(str1, str2))
 
+    def test_extract_uris_from_html(self):
+        html = """
+        <!DOCTYPE html>
+        <html>
+        <head>    
+        </head>
+        <body>
+            <a href="https://google.com">Google</a>
+            <a href="https://slack.com">Slack</a>
+        </body>
+        </html>
+        """
+        
+        uris = snitch2.extract_uris_from_html(html)
+
+        expected_num_links = 2
+
+        self.assertEqual(expected_num_links, len(uris))
+
+    def test_fetch_html(self):
+        pass
+
+    def test_crawl_page(self):
+        # Extract links from page
+        pass
+
 
 if __name__ == '__main__':
     main()
