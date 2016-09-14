@@ -42,17 +42,15 @@ def crawl(graph, origin_domain, start_url):
 
 def crawl_page(start_url, target_uri):
     """Crawl single page looking for target_uri"""
-    # Fetch html page
-    html_page = requests.get(start_url).text
+    html_page = fetch_html(start_url)
 
-    soup = BeautifulSoup(html_page, 'html.parser')
+    uris = extract_uris_from_html(html_page)
     results = []
 
-    for link in soup.find_all('a'):
-        href = link.get('href')
-        if contains(href, target_uri):
+    for uri in uris:
+        if contains(uri, target_uri):
             results.append({
-                "href": href,
+                "href": uri,
                 "page_uri": start_url
             })
 
@@ -80,6 +78,21 @@ def contains(str1, str2):
 
     return True
 
+
+def extract_uris_from_html(html_page):
+    """Return list of anchor tags from page"""
+    soup = BeautifulSoup(html_page, 'html.parser')
+    results = []
+
+    for link in soup.find_all('a'):
+        href = link.get('href')
+        results.append(href)
+
+    return results
+
+
+def fetch_html(url):
+    return requests.get(url).text
 
 
 if __name__ == '__main__':
