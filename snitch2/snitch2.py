@@ -3,6 +3,7 @@
 
 
 from collections import deque
+import json
 import re
 
 from bs4 import BeautifulSoup
@@ -15,29 +16,44 @@ def snitch(origin_domain, target_url, max_depth):
     pass
 
 
-def crawl(graph, origin_domain, start_url):
+def crawl(start_url, target_uri, max_crawl=1):
     # Initialize data structures
     visited = set()
     queue = deque()
 
     queue.append(start_url)
 
-    while queue:
+    pages_crawled = 0
+    results = []
+
+    while queue and pages_crawled < max_crawl:
         vertex = queue.popleft()
         if vertex not in visited:
             visited.add(vertex)
 
-            # Fetch html document
-            html_page = requests.get(start_url).text
-            # Add origin domain link to queue
-            soup = BeautifulSoup(html_page, 'html.parser')
-            for link in soup.find_all('a'):
-                href = link.get('href')
-                if contains(href, origin_domain):
-                    #queue.append(link.get('href'))
-                    print("heyo")
+            html_page = fetch_html(vertex)
+            uris = extract_uris_from_html(html_page)
 
-    return graph
+            for uri in uris:
+                # Only crawl pages on same domain
+                queue.append(uri)
+
+                if contains(uri, target_uri):
+                    results.append({
+                        "guilty_uri": uri,
+                        "target_uri": target_uri,
+                        "page_uri": vertex
+                    })
+            pages_crawled += 1
+
+    response = {
+        "start_url": start_url,
+        "target_uri": target_uri,
+        "pages_crawled": len(visited),
+        "guilty_total": len(results),
+        "guilty_results": results  
+    }
+    return json.dumps(response)
 
 
 def crawl_page(start_url, target_uri):
@@ -57,8 +73,8 @@ def crawl_page(start_url, target_uri):
     result = {
         "start_url": start_url,
         "target_uri": target_uri,
-        "results_total": len(results),
-        "results": results
+        "guilty_total": len(results),
+        "guilty_results": results
     }
 
     return result
@@ -96,4 +112,4 @@ def fetch_html(url):
 
 
 if __name__ == '__main__':
-    print crawl_page('http://www.joelcolucci.com', 'github.com')
+    print crawl('http://www.joelcolucci.com', 'github.com')
