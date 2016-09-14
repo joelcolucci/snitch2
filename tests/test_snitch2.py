@@ -6,7 +6,7 @@ from unittest import main
 from unittest import TestCase
 
 
-from snitch2 import main
+from snitch2 import snitch2
 
 
 class Snitch2TestCase(TestCase):
@@ -20,13 +20,13 @@ class Snitch2TestCase(TestCase):
         str1 = 'google.com/maps'
         str2 = 'google.com'
 
-        self.assertTrue(main.contains(str1, str2))
+        self.assertTrue(snitch2.contains(str1, str2))
 
     def test_contains_fail_returns_false(self):
         str1 = 'joelcolucci.com'
         str2 = 'google.com'
 
-        self.assertFalse(main.contains(str1, str2))
+        self.assertFalse(snitch2.contains(str1, str2))
 
 
 if __name__ == '__main__':
