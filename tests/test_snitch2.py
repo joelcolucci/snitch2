@@ -58,6 +58,21 @@ class Snitch2TestCase(TestCase):
 
         self.assertEqual(expected_num_links, len(uris))
 
+    def test_has_protocol(self):
+        # Ensure any URI grabbed contains protocol
+        uri_with_protocol = 'http://joelcolucci.com'
+        uri_no_protocol = 'joelcolucci.com'
+
+        self.assertTrue(snitch2.has_protocol(uri_with_protocol))
+        self.assertFalse(snitch2.has_protocol(uri_no_protocol))
+
+    def test_has_leading_forward_slashes(self):
+        uri_with_slashes = '//joelcolucci.com'
+        uri_without_leading_slahes = 'http://joelcolucci.com'
+
+        self.assertTrue(snitch2.has_leading_forward_slashes(uri_with_slashes))
+        self.assertFalse(snitch2.has_leading_forward_slashes(uri_without_leading_slahes))
+
     def test_fetch_html(self):
         pass
 
