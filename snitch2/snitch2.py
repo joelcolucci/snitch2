@@ -31,9 +31,16 @@ def snitch(start_url, target_uri, max_crawl=1):
             uris = extract_uris_from_html(html_page)
 
             for uri in uris:
-                # Only crawl pages on starting domain
-                if contains(uri, origin_domain):
-                    queue.append(uri)
+                # Make sure we only crawl starting domain
+                is_relative = is_relative_uri(uri)
+                if contains(uri, origin_domain) or is_relative:
+                    # Reassign to full_uri to ensure next condition does not prove True
+                    # when we the target URI matches hard coded origin domain
+                    if is_relative:
+                        full_uri = '{}{}'.format(origin_domain, uri)
+                    else:
+                        full_uri = uri
+                    queue.append(full_uri)
 
                 if contains(uri, target_uri):
                     results.append({
@@ -106,13 +113,38 @@ def extract_uris_from_html(html_page):
     return results
 
 
-def fetch_html(uri):
-    """Return HTML page as string"""
+def is_relative_uri(uri):
+    """Return True if uri is relative
+
+    Expects normalized URI w/ scheme
+    """
+    domain = urlparse.urlparse(uri).netloc
+    if not domain:
+        return True
+
+    return False
+
+
+def strip_path(uri):
+    domain = urlparse.urlparse(uri).netloc
+
+    return normalize_uri(domain)
+
+
+def normalize_uri(uri):
+    """Return normalize URI (scheme, netloc, path)"""
     if not has_protocol(uri):
         if has_leading_forward_slashes(uri):
             uri = '{}{}'.format('http:', uri)
         else:    
             uri = '{}{}'.format('http://', uri)
+
+    return uri
+
+
+def fetch_html(uri):
+    """Return HTML page as string"""
+    uri = normalize_uri(uri)
 
     return requests.get(uri).text
 
@@ -138,11 +170,5 @@ def has_protocol(uri):
     return False
 
 
-def strip_path(uri):
-    domain = urlparse.urlparse(uri).netloc
-
-    return domain
-
-
 if __name__ == '__main__':
-    print snitch('//github.com/joelcolucci', 'http://www.joelcolucci.com', 3)
+    print snitch('//joelcolucci.com', 'github.com', 2)
