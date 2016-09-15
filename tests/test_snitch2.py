@@ -73,12 +73,16 @@ class Snitch2TestCase(TestCase):
         self.assertTrue(snitch2.has_leading_forward_slashes(uri_with_slashes))
         self.assertFalse(snitch2.has_leading_forward_slashes(uri_without_leading_slahes))
 
+    def test_is_relative_uri(self):
+        uri_no_domain = '/hello'
+        uri_with_domain = 'http://www.joelcolucci.com/hello'
+
+        self.assertTrue(snitch2.is_relative_uri(uri_no_domain))
+        self.assertFalse(snitch2.is_relative_uri(uri_with_domain))
+
     def test_fetch_html(self):
         pass
 
-    def test_crawl_page(self):
-        # Extract links from page
-        pass
 
 
 if __name__ == '__main__':
