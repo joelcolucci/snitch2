@@ -5,6 +5,7 @@
 from collections import deque
 import json
 import re
+import urlparse
 
 from bs4 import BeautifulSoup
 import requests
@@ -23,6 +24,7 @@ def crawl(start_url, target_uri, max_crawl=1):
 
     queue.append(start_url)
 
+    origin_domain = strip_path(start_url)
     pages_crawled = 0
     results = []
 
@@ -36,7 +38,7 @@ def crawl(start_url, target_uri, max_crawl=1):
 
             for uri in uris:
                 # Only crawl pages on starting domain
-                if contains(uri, start_url):
+                if contains(uri, origin_domain):
                     queue.append(uri)
 
                 if contains(uri, target_uri):
@@ -140,6 +142,12 @@ def has_protocol(uri):
         return True
 
     return False
+
+
+def strip_path(uri):
+    domain = urlparse.urlparse(uri).netloc
+
+    return domain
 
 
 if __name__ == '__main__':
