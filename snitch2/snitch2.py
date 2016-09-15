@@ -11,14 +11,8 @@ from bs4 import BeautifulSoup
 import requests
 
 
-def snitch(origin_domain, target_url, max_depth):
-    """Return Response of query including list of pages and target results"""
-    # Validate origin domain
-    pass
-
-
-def crawl(start_url, target_uri, max_crawl=1):
-    # Initialize data structures
+def snitch(start_url, target_uri, max_crawl=1):
+    """Return pages on starting domain that contains links to target URI"""
     visited = set()
     queue = deque()
 
@@ -151,4 +145,4 @@ def strip_path(uri):
 
 
 if __name__ == '__main__':
-    print crawl('//github.com/joelcolucci', 'http://www.joelcolucci.com', 3)
+    print snitch('//github.com/joelcolucci', 'http://www.joelcolucci.com', 3)
