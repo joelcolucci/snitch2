@@ -10,7 +10,7 @@ pip install snitch2
 
 ## Getting Started
 ```
-import snitch2
+from snitch2 import snitch
 
 
 results = snitch.search(origin_domain, target_url)
@@ -19,13 +19,11 @@ results = snitch.search(origin_domain, target_url)
 Example results
 ```
 {
-    origin_domain: 'origin.com',
-    target_url: 'query.com',
-    max_depth: 5,
-    pages_crawled: 2,
-    pages_containing: 2,
-    results_total: 5
-    results: [
+    "pages_crawled": 1,
+    "target_uri": "github.com",
+    "start_url": "//joelcolucci.com",
+    "guilty_total": 1,
+    "guilty_results": [
         {
             'uri': 'origin.com',
             'total': 3,
