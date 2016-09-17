@@ -132,7 +132,6 @@ class ParseLinkTestCase(TestCase):
 
         self.assertFalse(result)
 
-    #TODO: href kind functions
     def test_get_href_kind_internal(self):
         """Test function returns 'internal' href kind"""
         domain = 'joelcolucci.com'
@@ -190,6 +189,31 @@ class ParseLinkTestCase(TestCase):
         self.assertFalse(result1)
         self.assertFalse(result2)
         self.assertFalse(result3)
+
+    def test_get_href_uri(self):
+        """Test function returns full URI with protocol"""
+        domain = 'joelcolucci.com'
+
+        href1 = '/'
+        href2 = '#'
+        href3 = '/hello'
+        href4 = 'joelcolucci.com'
+        href5 = '//joelcolucci.com'
+        href6 = 'http://joelcolucci.com'
+
+        result1 = parselink.get_href_uri(href1, domain)
+        result2 = parselink.get_href_uri(href2, domain)
+        result3 = parselink.get_href_uri(href3, domain)
+        result4 = parselink.get_href_uri(href4, domain)
+        result5 = parselink.get_href_uri(href5, domain)
+        result6 = parselink.get_href_uri(href6, domain)
+
+        self.assertEqual(result1, 'http://joelcolucci.com/')
+        self.assertEqual(result2, 'http://joelcolucci.com#')
+        self.assertEqual(result3, 'http://joelcolucci.com/hello')
+        self.assertEqual(result4, 'http://joelcolucci.com')
+        self.assertEqual(result5, 'http://joelcolucci.com')
+        self.assertEqual(result6, 'http://joelcolucci.com')
 
 
 # Normalize protocol
