@@ -96,7 +96,8 @@ def has_http_protocol(uri):
 #######################################################################
 
 def get_href_type(href):
-    if is_relative_href(href):
+    """Return type (relative, absolute) of href"""
+    if is_relative_href(href) or is_fragment(href):
         type = 'relative'
     else:
         type = 'absolute'
@@ -104,12 +105,16 @@ def get_href_type(href):
     return type
 
 def is_relative_href(href):
-    # Relative
-    # Fragment
-    pass
+    """Return True if href is relative else False"""
+    if href[0] == '/' and href[1] != '/':
+        # Single forward slash. Two forward slashes could be relative protocol.
+        return True
 
-def is_fragment(uri):
-    if uri[0] == '#':
+    return False
+
+def is_fragment(href):
+    """Return True if href is a fragment else False"""
+    if href[0] == '#':
         return True
 
     return False
