@@ -44,16 +44,14 @@ def parse_link(href, domain):
     """Return dictionary of link attributes"""
     normalized_domain = normalize_protocol(domain)
 
-    type = get_href_type(href)
+    href_type = get_href_type(href)
 
     kind = get_href_kind(href, domain)
 
     uri = get_href_uri(href, domain)
 
-    domain = get_domain(href)
-
     return {
-        'type': type,
+        'type': href_type,
         'kind': kind,
         'uri': uri,
         'domain': normalized_domain
@@ -70,6 +68,7 @@ def normalize_protocol(uri):
     
     return uri
 
+    
 def has_relative_protocol(uri):
     """Return True if URI has relative protocol '//' """
     start = uri[:2]
@@ -78,6 +77,7 @@ def has_relative_protocol(uri):
         return True
     
     return False
+
 
 def has_http_protocol(uri):
     """Return True if URI does not have HTTP protocol"""
@@ -92,7 +92,7 @@ def has_http_protocol(uri):
 
 def get_href_type(href):
     """Return type (relative, absolute) of href"""
-    if is_relative_href(href) or is_fragment(href):
+    if is_relative_href(href):
         type = 'relative'
     else:
         type = 'absolute'
@@ -103,12 +103,13 @@ def get_href_type(href):
 def is_relative_href(href):
     """Return True if href is relative else False"""
     regex = '^\/($|[^\/ ]+)'
-
     result = re.match(regex, href)
-    if result:
+    
+    if result or is_fragment(href):
         return True
 
     return False
+
 
 def is_fragment(href):
     """Return True if href is a fragment else False"""
@@ -127,6 +128,7 @@ def get_href_kind(href, domain):
 
     return kind
 
+
 def is_internal_href(href, domain):
     """Return True if link is to an internal page else False"""
     if is_relative_href(href) or contains(href, domain):
@@ -135,45 +137,15 @@ def is_internal_href(href, domain):
     return False
 
 
-#######################################################################
 def get_href_uri(href, domain):
-    pass
-
-
-#######################################################################
-def get_domain(href):
-    uri = get_href_uri(href)
-
-    url = urlparse(uri).netloc
+    """Return full URI for href"""
+    if is_relative_href(href):
+        normalized_domain = normalize_protocol(domain)
+        uri = '{}{}'.format(normalized_domain, href)
+    else:
+        uri = normalize_protocol(href)
 
     return uri
-
-
-#######################################################################
-
-
-def is_relative_uri(uri):
-    """Return True if uri is relative
-
-    Expects normalized URI w/ scheme
-    """
-    domain = urlparse.urlparse(uri).netloc
-    if not domain:
-        return True
-
-    return False
-
-
-
-    
- 
-def strip_path(uri):
-    domain = urlparse.urlparse(uri).netloc
-
-    return normalize_uri(domain)
-
-
-
 
 
 def contains(str1, str2):
@@ -189,7 +161,6 @@ def contains(str1, str2):
         return False
 
     return True
-
 
 
 if __name__ == '__main__':
