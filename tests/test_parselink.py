@@ -215,12 +215,21 @@ class ParseLinkTestCase(TestCase):
         self.assertEqual(result5, 'http://joelcolucci.com')
         self.assertEqual(result6, 'http://joelcolucci.com')
 
+    def test_get_domain(self):
+        """Test function returns domain"""
+        uri1 = 'http://www.joelcolucci.com/hello/world'
+        uri2 = 'www.joelcolucci.com/helloworld'
+        uri3 = '//www.joelcolucci.com/helloworld'
 
-# Normalize protocol
-# Trick part is we need to know relative link versus absolute
-# If we normalize fragments/paths how do we know this?
+        result1 = parselink.get_domain(uri1)
+        result2 = parselink.get_domain(uri2)
+        result3 = parselink.get_domain(uri3)
 
-# CHALLENGE -> Allow functions to be called in any order
+        expected_result = 'www.joelcolucci.com'
+
+        self.assertEqual(result1, expected_result)
+        self.assertEqual(result2, expected_result)
+        self.assertEqual(result3, expected_result)
 
 
 if __name__ == '__main__':
