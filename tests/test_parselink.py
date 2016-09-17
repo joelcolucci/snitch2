@@ -231,6 +231,29 @@ class ParseLinkTestCase(TestCase):
         self.assertEqual(result2, expected_result)
         self.assertEqual(result3, expected_result)
 
+    def test_get_links(self):
+        """Test function returns expected results"""
+        uri = 'www.joelcolucci.com'
+        html = """
+        <!DOCTYPE html>
+        <html>
+        <head>    
+        </head>
+        <body>
+            <a href="https://google.com">Google</a>
+            <a href="https://slack.com">Slack</a>
+            <a href="/about">About Me</a>
+            <a href="www.joelcolucci.com/contact">Contact Me</a>
+        </body>
+        </html>
+        """
+        
+        links = parselink.get_links(uri, html)
+
+        expected_num_links = 4
+
+        self.assertEqual(expected_num_links, len(links))
+
 
 if __name__ == '__main__':
     main()
