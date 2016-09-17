@@ -93,11 +93,14 @@ class ParseLinkTestCase(TestCase):
         
     def test_is_relative_href_true(self):
         """Test function returns expected True"""
-        href = '/hello/world'
+        href1 = '/hello/world'
+        href2 = '/'
 
-        result = parselink.is_relative_href(href)
+        result1 = parselink.is_relative_href(href1)
+        result2 = parselink.is_relative_href(href2)
         
-        self.assertTrue(result)
+        self.assertTrue(result1)
+        self.assertTrue(result2)
 
     def test_is_relative_href_false(self):
         """Test function returns expected False"""
@@ -129,19 +132,71 @@ class ParseLinkTestCase(TestCase):
 
         self.assertFalse(result)
 
-
     #TODO: href kind functions
+    def test_get_href_kind_internal(self):
+        """Test function returns 'internal' href kind"""
+        domain = 'joelcolucci.com'
+        
+        href1 = '/'
+        href2 = 'joelcolucci.com/hello'
 
-# We want to normalize the protocol of the domain right away
+        result1 = parselink.get_href_kind(href1, domain)
+        result2 = parselink.get_href_kind(href2, domain)
 
-# We don't want to normalize protocol of hrefs right away because they could be relative
+        self.assertEqual(result1, 'internal')
+        self.assertEqual(result2, 'internal')
+
+    def test_get_href_kind_external(self):
+        """Test function returns 'external' href kind"""
+        domain = 'joelcolucci.com'
+
+        href1 = 'google.com'
+        href2 = 'www.google.com'
+        href3 = 'https:/www.google.com/hello'
+
+        result1 = parselink.get_href_kind(href1, domain)
+        result2 = parselink.get_href_kind(href2, domain)
+        result3 = parselink.get_href_kind(href3, domain)
+
+        self.assertEqual(result1, 'external')
+        self.assertEqual(result2, 'external')
+        self.assertEqual(result3, 'external')
+
+    def test_is_external_href_true(self):
+        """Test function returns expected True"""
+        domain = 'joelcolucci.com'
+        
+        href1 = '/'
+        href2 = 'joelcolucci.com/hello'
+
+        result1 = parselink.is_internal_href(href1, domain)
+        result2 = parselink.is_internal_href(href2, domain)
+
+        self.assertTrue(result1)
+        self.assertTrue(result2)
+
+    def test_is_external_href_false(self):
+        """Test function returns expected False"""
+        domain = 'joelcolucci.com'
+
+        href1 = 'google.com'
+        href2 = 'www.google.com'
+        href3 = 'https:/www.google.com/hello'
+
+        result1 = parselink.is_internal_href(href1, domain)
+        result2 = parselink.is_internal_href(href2, domain)
+        result3 = parselink.is_internal_href(href3, domain)
+
+        self.assertFalse(result1)
+        self.assertFalse(result2)
+        self.assertFalse(result3)
+
 
 # Normalize protocol
 # Trick part is we need to know relative link versus absolute
 # If we normalize fragments/paths how do we know this?
 
 # CHALLENGE -> Allow functions to be called in any order
-#IZZY MALIK
 
 
 if __name__ == '__main__':
