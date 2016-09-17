@@ -16,33 +16,31 @@ import urlparse
 from bs4 import BeautifulSoup
 
 
-class LinkExtractor(object):
-    """Extract and normalize links from HTML"""
 
-    def __init__(self, page_uri, page_html):
-        self.page_uri = page_uri
-        self.page_html = page_html
-        #self.page_domain = NormalizedLink(page_uri).domain
-      
-    def get_links(self, html_page):
-        """Return list of anchor tags from page"""
-        soup = BeautifulSoup(html_page, 'html.parser')
+def get_links(self, page_uri, page_html):
+    """Return list of anchor tags from page"""
+    soup = BeautifulSoup(page_html, 'html.parser')
 
-        anchors = soup.find_all('a')
-        results = []
+    domain = get_domain(page_uri) #TODO URL parse for netloc
 
-        for anchor in anchors:
-            href = anchor.get('href')
-            text = anchor.get('text')
+    anchors = soup.find_all('a')
+    results = []
 
-            results.append(href)
+    for anchor in anchors:
+        href = anchor.get('href')
+        link = parse_link(href, domain)
 
-        return results
+        text = anchor.string
+        link['text'] = text
+
+        results.append(link)
+
+    return results
 
 
 def parse_link(href, domain):
     """Return dictionary of link attributes"""
-    normalized_domain = normalize_protocol(domain)
+    normalized_domain = get_domain(domain)
 
     href_type = get_href_type(href)
 
@@ -146,6 +144,15 @@ def get_href_uri(href, domain):
         uri = normalize_protocol(href)
 
     return uri
+
+
+def get_domain(domain):
+    """Return domain only (no protocol)"""
+    normalized_domain = normalize_protocol(domain)
+
+    url = urlparse.urlparse(normalized_domain)
+
+    return url.netloc 
 
 
 def contains(str1, str2):
