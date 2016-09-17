@@ -72,6 +72,66 @@ class ParseLinkTestCase(TestCase):
         self.assertFalse(relative_result)
         self.assertFalse(naked_result)
 
+    def test_get_href_type_relative(self):
+        """Test function returns 'relative' href type"""
+        href1 = '/hello/world'
+        href2 = '#'
+
+        result1 = parselink.get_href_type(href1)
+        result2 = parselink.get_href_type(href2)
+
+        self.assertEqual(result1, 'relative')
+        self.assertEqual(result2, 'relative')
+
+    def test_get_href_type_absolute(self):
+        """Test function returns 'absolute' href type"""
+        href = 'http://joelcolucci.com'
+
+        result = parselink.get_href_type(href)
+
+        self.assertEqual(result, 'absolute')
+        
+    def test_is_relative_href_true(self):
+        """Test function returns expected True"""
+        href = '/hello/world'
+
+        result = parselink.is_relative_href(href)
+        
+        self.assertTrue(result)
+
+    def test_is_relative_href_false(self):
+        """Test function returns expected False"""
+        href1 = 'http://joelcolucci.com'
+        href2 = 'www.joelcolucci.com'
+        href3 = '//joelcolucci.com'
+        
+        result1 = parselink.is_relative_href(href1)
+        result2 = parselink.is_relative_href(href2)
+        result3 = parselink.is_relative_href(href3)
+
+        self.assertFalse(result1)
+        self.assertFalse(result2)
+        self.assertFalse(result3)
+
+    def test_is_fragment_true(self):
+        """Test function returns expected True"""
+        href = '#'
+
+        result = parselink.is_fragment(href)
+
+        self.assertTrue(result)
+
+    def test_is_fragment_false(self):
+        """Test function returns expected False"""
+        href = '/hello'
+
+        result = parselink.is_fragment(href)
+
+        self.assertFalse(result)
+
+
+    #TODO: href kind functions
+
 # We want to normalize the protocol of the domain right away
 
 # We don't want to normalize protocol of hrefs right away because they could be relative
