@@ -1,4 +1,4 @@
-"""Module containing function for normalizing and parsing URIs
+"""Module containing function for normalizing and parsing HTML anchor tags
 link = {
     'type': ['internal', 'external', 'unknown'],
     'kind': ['relative', 'absolute'],
@@ -16,12 +16,11 @@ import urlparse
 from bs4 import BeautifulSoup
 
 
-
-def get_links(self, page_uri, page_html):
-    """Return list of anchor tags from page"""
+def get_links(page_uri, page_html):
+    """Return list of link meta data for all links on page"""
     soup = BeautifulSoup(page_html, 'html.parser')
 
-    domain = get_domain(page_uri) #TODO URL parse for netloc
+    domain = get_domain(page_uri)
 
     anchors = soup.find_all('a')
     results = []
@@ -49,6 +48,7 @@ def parse_link(href, domain):
     uri = get_href_uri(href, domain)
 
     return {
+        'href': href,
         'type': href_type,
         'kind': kind,
         'uri': uri,
