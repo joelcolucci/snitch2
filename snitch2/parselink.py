@@ -41,14 +41,14 @@ class LinkExtractor(object):
 
 
 def parse_link(href, domain):
-
-    domain = normalize_protocol(domain)
+    """Return dictionary of link attributes"""
+    normalized_domain = normalize_protocol(domain)
 
     type = get_href_type(href)
 
-    kind = get_href_kind(href)
+    kind = get_href_kind(href, domain)
 
-    uri = get_href_uri(href)
+    uri = get_href_uri(href, domain)
 
     domain = get_domain(href)
 
@@ -56,11 +56,8 @@ def parse_link(href, domain):
         'type': type,
         'kind': kind,
         'uri': uri,
-        'domain': domain
+        'domain': normalized_domain
     }
-
-    
-#######################################################################
 
 
 def normalize_protocol(uri):
@@ -93,8 +90,6 @@ def has_http_protocol(uri):
     return False
 
 
-#######################################################################
-
 def get_href_type(href):
     """Return type (relative, absolute) of href"""
     if is_relative_href(href) or is_fragment(href):
@@ -104,10 +99,13 @@ def get_href_type(href):
 
     return type
 
+
 def is_relative_href(href):
     """Return True if href is relative else False"""
-    if href[0] == '/' and href[1] != '/':
-        # Single forward slash. Two forward slashes could be relative protocol.
+    regex = '^\/($|[^\/ ]+)'
+
+    result = re.match(regex, href)
+    if result:
         return True
 
     return False
@@ -119,23 +117,26 @@ def is_fragment(href):
 
     return False
 
-#######################################################################
 
-def get_href_kind(href):
-    if is_internal_href(href):
+def get_href_kind(href, domain):
+    """Return kind of href (internal or external)"""
+    if is_internal_href(href, domain):
         kind = 'internal'
     else:
         kind = 'external'
 
     return kind
 
-def is_internal_href(href):
-    pass
+def is_internal_href(href, domain):
+    """Return True if link is to an internal page else False"""
+    if is_relative_href(href) or contains(href, domain):
+        return True
 
+    return False
 
 
 #######################################################################
-def get_href_uri(href):
+def get_href_uri(href, domain):
     pass
 
 
