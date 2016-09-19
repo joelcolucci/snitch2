@@ -27,12 +27,14 @@ def get_links(page_uri, page_html):
 
     for anchor in anchors:
         href = anchor.get('href')
-        link = parse_link(href, domain)
+        # href may not be defined on anchor tag
+        if href:
+            link = parse_link(href, domain)
 
-        text = anchor.string
-        link['text'] = text
+            text = anchor.string
+            link['text'] = text
 
-        results.append(link)
+            results.append(link)
 
     return results
 
