@@ -120,11 +120,14 @@ class ParseLinkTestCase(TestCase):
 
     def test_is_fragment_true(self):
         """Test function returns expected True"""
-        href = '#'
+        href0 = ''
+        href1 = '#'
 
-        result = parselink.is_fragment(href)
+        result0 = parselink.is_fragment(href0)
+        result1 = parselink.is_fragment(href1)
 
-        self.assertTrue(result)
+        self.assertFalse(result0)
+        self.assertTrue(result1)
 
     def test_is_fragment_false(self):
         """Test function returns expected False"""
