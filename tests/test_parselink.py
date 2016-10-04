@@ -104,6 +104,8 @@ class ParseLinkTestCase(TestCase):
 
     def test_is_relative_href_false(self):
         """Test function returns expected False"""
+        # TODO: Add none unit test
+        # TODO: Add empty string
         href1 = 'http://joelcolucci.com'
         href2 = 'www.joelcolucci.com'
         href3 = '//joelcolucci.com'
@@ -194,12 +196,13 @@ class ParseLinkTestCase(TestCase):
         """Test function returns full URI with protocol"""
         domain = 'joelcolucci.com'
 
-        href1 = '/'
-        href2 = '#'
-        href3 = '/hello'
-        href4 = 'joelcolucci.com'
-        href5 = '//joelcolucci.com'
-        href6 = 'http://joelcolucci.com'
+        href1 = ''
+        href2 = '/'
+        href3 = '#'
+        href4 = '/hello'
+        href5 = 'joelcolucci.com'
+        href6 = '//joelcolucci.com'
+        href7 = 'http://joelcolucci.com'
 
         result1 = parselink.get_href_uri(href1, domain)
         result2 = parselink.get_href_uri(href2, domain)
@@ -207,13 +210,15 @@ class ParseLinkTestCase(TestCase):
         result4 = parselink.get_href_uri(href4, domain)
         result5 = parselink.get_href_uri(href5, domain)
         result6 = parselink.get_href_uri(href6, domain)
+        result7 = parselink.get_href_uri(href7, domain)
 
-        self.assertEqual(result1, 'http://joelcolucci.com/')
-        self.assertEqual(result2, 'http://joelcolucci.com#')
-        self.assertEqual(result3, 'http://joelcolucci.com/hello')
-        self.assertEqual(result4, 'http://joelcolucci.com')
+        self.assertEqual(result1, 'http://joelcolucci.com')
+        self.assertEqual(result2, 'http://joelcolucci.com/')
+        self.assertEqual(result3, 'http://joelcolucci.com#')
+        self.assertEqual(result4, 'http://joelcolucci.com/hello')
         self.assertEqual(result5, 'http://joelcolucci.com')
         self.assertEqual(result6, 'http://joelcolucci.com')
+        self.assertEqual(result7, 'http://joelcolucci.com')
 
     def test_get_domain(self):
         """Test function returns domain"""
@@ -244,6 +249,7 @@ class ParseLinkTestCase(TestCase):
             <a href="https://slack.com">Slack</a>
             <a href="/about">About Me</a>
             <a href="www.joelcolucci.com/contact">Contact Me</a>
+            <a id="tab-1">Tab Item</a>
         </body>
         </html>
         """
