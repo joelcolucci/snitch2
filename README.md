@@ -1,4 +1,4 @@
-# snitch2
+# snitch2 [![Build Status](https://travis-ci.org/joelcolucci/snitch2.svg?branch=master)](https://travis-ci.org/joelcolucci/snitch2)
 
 ## Description
 Crawl a site for unwanted/curious links.
