@@ -121,10 +121,15 @@ def is_relative_href(href):
 
 def is_fragment(href):
     """Return True if href is a fragment else False"""
-    if href[0] == '#':
-        return True
+    is_fragment = False
 
-    return False
+    try:
+        if href[0] == '#':
+            is_fragment = True
+    except IndexError:
+        is_fragment = False
+
+    return is_fragment
 
 
 def get_href_kind(href, domain):
