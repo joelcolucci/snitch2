@@ -27,7 +27,7 @@ def get_links(page_uri, page_html):
 
     for anchor in anchors:
         href = anchor.get('href')
-        # href may not be defined on anchor tag
+        
         if href:
             link = parse_link(href, domain)
 
@@ -102,9 +102,17 @@ def get_href_type(href):
 
 def is_relative_href(href):
     """Return True if href is relative else False"""
-    regex = '^\/($|[^\/ ]+)'
-    result = re.match(regex, href)
-    
+
+    _rule_re = re.compile(r'''
+        (
+            ^$              # empty string
+            |
+            ^\/($|[^\/ ]+)  # leading single '/'
+        )
+    ''', re.VERBOSE)
+
+    result = re.match(_rule_re, href)
+
     if result or is_fragment(href):
         return True
 
