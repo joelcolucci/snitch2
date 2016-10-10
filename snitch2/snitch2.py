@@ -9,7 +9,22 @@ import requests
 import parselink
 
 
-def snitch(start_url, target_uri, max_crawl=1):
+def snitch(start_url, target_uri, max_crawl=1, threaded=False):
+    """Return pages on starting domain that contains links to target URI"""
+    if threaded:
+        response = _multi_thread_crawl(start_url, target_uri, max_crawl)
+    else:
+        response = _single_thread_crawl(start_url, target_uri, max_crawl)
+
+    return response
+
+
+def _multi_thread_crawl(start_url, target_uri, max_crawl):
+    """Return pages on starting domain that contains links to target URI"""
+    return {}
+
+
+def _single_thread_crawl(start_url, target_uri, max_crawl=1):
     """Return pages on starting domain that contains links to target URI"""
     visited = set()
     queue = deque()
