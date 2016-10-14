@@ -1,7 +1,6 @@
 # snitch2 [![Build Status](https://travis-ci.org/joelcolucci/snitch2.svg?branch=master)](https://travis-ci.org/joelcolucci/snitch2)
 
-## Description
-Crawl a site for unwanted/curious links.
+A web crawler to search a domain for target links.
 
 ## Installation
 ```
@@ -44,5 +43,8 @@ Example results
     ]
 }
 ```
+## Be responsible
+Snitch2 does not currently check robots.txt when crawling a domain. Please be responsible!
 
 ## License
+MIT License (c) 2016 Joel Colucci
