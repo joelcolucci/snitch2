@@ -14,7 +14,7 @@ from snitch2 import snitch
 starting_url = 'http://joelcolucci.com'
 target_url = 'github.com'
 
-results = snitch.search(starting_url, target_url)
+results = snitch(starting_url, target_url)
 ```
 
 Example results
