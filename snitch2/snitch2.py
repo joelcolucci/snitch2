@@ -11,12 +11,12 @@ import requests
 import parselink
 
 
-def snitch(start_url, target_uri, max_crawl=1, threaded=False):
+def snitch(start_url, target_url, max_crawl=1, threaded=False):
     """Return pages on starting domain that contains links to target URI"""
     if threaded:
-        response = _multi_thread_crawl(start_url, target_uri, max_crawl)
+        response = _multi_thread_crawl(start_url, target_url, max_crawl)
     else:
-        response = _single_thread_crawl(start_url, target_uri, max_crawl)
+        response = _single_thread_crawl(start_url, target_url, max_crawl)
 
     return response
 
@@ -53,7 +53,7 @@ def _multi_thread_crawl(start_url, target_url, max_crawl):
     response = {
         "pages_crawled": pages_crawled,
         "start_url": start_url,
-        "target_uri": target_url,
+        "target_url": target_url,
         "guilty_total": len(results),
         "guilty_results": results
     }
@@ -63,8 +63,6 @@ def _multi_thread_crawl(start_url, target_url, max_crawl):
 
 def _multi_thread_fetch(url, target_url, results, out_queue):
     """Fetch a url and push any urls found into a queue."""
-    #print("fetching", url)
-
     data = ''
     with eventlet.Timeout(5, False):
         normalized_url = parselink.normalize_protocol(url)
@@ -83,12 +81,12 @@ def _multi_thread_fetch(url, target_url, results, out_queue):
             # hard coded absolutes
             results.append({
                 "guilty_link": link,
-                "target_uri": target_url,
+                "target_url": target_url,
                 "page_uri": url
             })
 
 
-def _single_thread_crawl(start_url, target_uri, max_crawl=1):
+def _single_thread_crawl(start_url, target_url, max_crawl=1):
     """Return pages on starting domain that contains links to target URI"""
     visited = set()
     queue = deque()
@@ -103,7 +101,7 @@ def _single_thread_crawl(start_url, target_uri, max_crawl=1):
 
         visited.add(vertex)
 
-        html_page = fetch_html(vertex)
+        html_page = _fetch_html(vertex)
         links = parselink.get_links(vertex, html_page)
 
         for link in links:
@@ -112,12 +110,12 @@ def _single_thread_crawl(start_url, target_uri, max_crawl=1):
             if link['uri'] not in visited and link['kind'] == 'internal':
                 queue.append(link['uri'])
 
-            if parselink.contains(link['uri'], target_uri) and link['type'] == 'absolute':
+            if parselink.contains(link['uri'], target_url) and link['type'] == 'absolute':
                 # We don't consider relative links on target domain to be guilty only
                 # hard coded absolutes
                 results.append({
                     "guilty_link": link,
-                    "target_uri": target_uri,
+                    "target_url": target_url,
                     "page_uri": vertex
                 })
 
@@ -125,7 +123,7 @@ def _single_thread_crawl(start_url, target_uri, max_crawl=1):
 
     response = {
         "start_url": start_url,
-        "target_uri": target_uri,
+        "target_url": target_url,
         "pages_crawled": pages_crawled,
         "guilty_total": len(results),
         "guilty_results": results
@@ -134,7 +132,7 @@ def _single_thread_crawl(start_url, target_uri, max_crawl=1):
     return response
 
 
-def fetch_html(uri):
+def _fetch_html(uri):
     """Return HTML page as string"""
     uri = parselink.normalize_protocol(uri)
     return requests.get(uri).text
